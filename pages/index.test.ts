@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue'
+import { render, fireEvent, waitFor } from '@testing-library/vue'
 import { GithubQuery } from '~/plugins/search'
 import index from '~/pages/index.vue'
 
@@ -24,12 +24,14 @@ describe('index', () => {
         $search: searchQuery,
       },
     })
-
+    expect(wrapper.queryByText(/Lindsay Wardell/i)).toBeFalsy()
     const input = wrapper.getByPlaceholderText(/Search GitHub/i)
     await fireEvent.update(input, 'lindsaykwardell')
     const button = wrapper.getByText('Search')
     await fireEvent.click(button)
-
     expect(searchQuery.mock.calls).toEqual([['lindsaykwardell']])
+    await waitFor(() => {
+      expect(wrapper.queryByText(/Lindsay Wardell/i)).toBeTruthy()
+    })
   })
 })
