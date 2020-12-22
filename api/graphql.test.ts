@@ -12,7 +12,7 @@ describe('GraphQL API', () => {
 
     await graphql(app)
 
-    server = app.listen(4000)
+    server = app.listen(4001)
   })
 
   afterAll(() => {
