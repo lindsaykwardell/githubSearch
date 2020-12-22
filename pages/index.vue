@@ -16,7 +16,6 @@
               />
               <button
                 class="w-24 bg-green-300 hover:bg-green-400 transition duration-50 rounded p-2 ml-4"
-                @click="search"
               >
                 Search
               </button>

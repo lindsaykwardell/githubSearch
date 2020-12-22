@@ -1,13 +1,8 @@
-import { mount } from '@vue/test-utils'
+import { render, fireEvent } from '@testing-library/vue'
 import { GithubQuery } from '~/plugins/search'
 import index from '~/pages/index.vue'
 
 describe('index', () => {
-  test('is a Vue instance', () => {
-    const wrapper = mount(index)
-    expect(wrapper.vm).toBeTruthy()
-  })
-
   test('searches based on input', async () => {
     const searchQuery = jest.fn(
       async (_: string): Promise<GithubQuery> => {
@@ -24,15 +19,16 @@ describe('index', () => {
       },
     )
 
-    const wrapper = mount(index, {
+    const wrapper = render(index, {
       mocks: {
         $search: searchQuery,
       },
     })
 
-    const input = wrapper.find('input')
-    await input.setValue('lindsaykwardell')
-    await wrapper.find('button').trigger('click')
+    const input = wrapper.getByPlaceholderText(/Search GitHub/i)
+    await fireEvent.update(input, 'lindsaykwardell')
+    const button = wrapper.getByText('Search')
+    await fireEvent.click(button)
 
     expect(searchQuery.mock.calls).toEqual([['lindsaykwardell']])
   })
