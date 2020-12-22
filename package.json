@@ -25,7 +25,14 @@
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.0.0",
     "@nuxtjs/axios": "^5.12.2",
+    "apollo-server-express": "^2.19.0",
     "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^15.4.0",
+    "graphql-request": "^3.4.0",
+    "graphql-tools": "^7.0.2",
+    "isomorphic-fetch": "^3.0.0",
     "nuxt": "^2.14.6"
   },
   "devDependencies": {
@@ -38,6 +45,7 @@
     "@nuxtjs/eslint-module": "^2.0.0",
     "@nuxtjs/stylelint-module": "^4.0.0",
     "@nuxtjs/tailwindcss": "^3.1.0",
+    "@types/jest": "^26.0.19",
     "@vue/test-utils": "^1.1.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
