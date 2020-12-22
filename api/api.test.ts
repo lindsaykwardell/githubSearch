@@ -1,11 +1,11 @@
 import 'isomorphic-fetch'
-import app from './api'
 import { Server } from 'http'
+import app from './api'
 
 let server: Server
 
 describe('GraphQL API', () => {
-  beforeAll(() => {    
+  beforeAll(() => {
     server = app.listen(4000)
   })
 
@@ -15,7 +15,7 @@ describe('GraphQL API', () => {
 
   it('accepts a basic query', async () => {
     const res = await (await fetch('http://localhost:4000/test')).json()
-  
-    expect(res.msg).toEqual("Hello, World")
+
+    expect(res.msg).toEqual('Hello, World')
   })
 })

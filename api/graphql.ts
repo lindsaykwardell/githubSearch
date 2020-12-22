@@ -1,9 +1,10 @@
-require('dotenv').config()
 import 'isomorphic-fetch'
 import { ApolloServer } from 'apollo-server-express'
 import { introspectSchema, makeRemoteExecutableSchema } from 'graphql-tools'
 import { print } from 'graphql'
 import { Express } from 'express'
+
+require('dotenv').config()
 
 const executor = async ({
   document,

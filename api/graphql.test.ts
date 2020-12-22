@@ -1,9 +1,8 @@
 import 'isomorphic-fetch'
-// import app from './api'
-import graphql from './graphql'
-import express from 'express'
 import { Server } from 'http'
 import { request, gql } from 'graphql-request'
+import express from 'express'
+import graphql from './graphql'
 
 let server: Server
 
@@ -12,7 +11,7 @@ describe('GraphQL API', () => {
     const app = express()
 
     await graphql(app)
-    
+
     server = app.listen(4000)
   })
 
@@ -42,6 +41,6 @@ describe('GraphQL API', () => {
       }
     )
 
-    expect(res.search.edges[0].node.name === "Lindsay Wardell")
+    expect(res.search.edges[0].node.name === 'Lindsay Wardell')
   })
 })
