@@ -50,7 +50,7 @@ const searchGithubUsers = (query: string) =>
     `,
     {
       query,
-    }
+    },
   )
 
 const myPlugin: Plugin = (context, inject) => {
