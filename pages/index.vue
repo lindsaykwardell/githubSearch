@@ -1,70 +1,57 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">githubSearch</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+  <div class="flex h-screen bg-gray-100 justify-center">
+    <div class="search-card bg-white shadow my-6">
+      <div class="p-3">
+        <label>
+          <h1 class="text-xl text-gray-600">
+            Search more than <strong>64M</strong> users
+          </h1>
+          <form @submit.stop.prevent="search">
+            <div class="flex pt-2">
+              <input
+                v-model="query"
+                type="text"
+                class="shadow w-full p-2 bg-gray-100 flex-grow"
+                placeholder="Search GitHub"
+              />
+              <button
+                class="w-24 bg-green-300 hover:bg-green-400 transition duration-50 rounded p-2 ml-4"
+                @click="search"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+        </label>
       </div>
+      <div v-for="user in users" :key="user.name">{{ user }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { GithubUser } from '~/plugins/search'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data: (): {
+    query: string
+    users: GithubUser[]
+  } => ({
+    query: '',
+    users: [],
+  }),
+  methods: {
+    async search() {
+      const { search } = await this.$search(this.query)
+      this.users = search.nodes
+    },
+  },
+})
 </script>
 
-<style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
-@apply min-h-screen flex justify-center items-center text-center mx-auto;
-}
-*/
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+<style lang="postcss" scoped>
+.search-card {
+  width: 1400px;
 }
 </style>

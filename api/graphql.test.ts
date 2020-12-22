@@ -38,7 +38,7 @@ describe('GraphQL API', () => {
       `,
       {
         query: 'lindsaykwardell',
-      }
+      },
     )
 
     expect(res.search.edges[0].node.name === 'Lindsay Wardell')

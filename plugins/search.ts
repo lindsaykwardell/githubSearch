@@ -22,12 +22,12 @@ declare module 'vuex/types/index' {
   }
 }
 
-type GithubUser = {
+export type GithubUser = {
   __typename: string
   name: string
 }
 
-type GithubQuery = {
+export type GithubQuery = {
   search: {
     nodes: GithubUser[]
   }
