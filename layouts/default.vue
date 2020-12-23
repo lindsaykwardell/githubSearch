@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-gray-100">
     <Nuxt />
   </div>
 </template>
 
-<style>
+<style lang="postcss">
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;

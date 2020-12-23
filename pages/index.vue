@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-screen bg-gray-100 justify-center">
-    <div class="search-card bg-white shadow my-6">
+  <div class="flex justify-center">
+    <div class="search-card bg-white shadow m-6">
       <div class="p-3">
         <label>
           <h1 class="text-xl text-gray-600">
@@ -15,7 +15,7 @@
                 placeholder="Search GitHub"
               />
               <button
-                class="w-24 bg-green-300 hover:bg-green-400 transition duration-50 rounded p-2 ml-4"
+                class="w-24 bg-green-300 hover:bg-green-400 hover:shadow transition duration-50 rounded p-2 ml-4"
               >
                 Search
               </button>
@@ -23,27 +23,96 @@
           </form>
         </label>
       </div>
-      <div v-for="user in users" :key="user.name">{{ user }}</div>
+      <div v-if="userCount" class="p-3 text-gray-600 text-lg">
+        {{ userCount }} {{ userCount === 1 ? 'result' : 'results' }}
+      </div>
+      <div
+        v-for="user in users"
+        :key="user.id"
+        class="flex m-3 p-3 border-b border-gray-300"
+      >
+        <img
+          class="avatar rounded-full shadow"
+          :src="user.avatarUrl"
+          :alt="`${user.name} avatar`"
+        />
+        <div class="flex-grow pl-5">
+          <div class="flex items-end">
+            <h2 class="text-3xl">
+              <a
+                :href="user.url"
+                class="text-blue-500 underline hover:text-blue-700"
+                >{{ user.name }}</a
+              >
+            </h2>
+            <div class="pl-5 text-gray-500">{{ user.login }}</div>
+          </div>
+          <p class="py-2">{{ user.bio }}</p>
+          <div class="flex"></div>
+        </div>
+      </div>
+      <div v-if="activeSearch" class="flex justify-around w-64 m-auto py-3">
+        <button
+          class="w-24 bg-gray-200 rounded p-1 text-xs text-gray-700 hover:shadow hover:bg-gray-300 transition duration-50 disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="!activeSearch.search.pageInfo.hasPreviousPage"
+          @click="prev"
+        >
+          Previous
+        </button>
+        <button
+          class="w-24 bg-gray-200 rounded p-1 text-xs text-gray-700 hover:shadow hover:bg-gray-300 transition duration-50 disabled:cursor-not-allowed disabled:opacity-50"
+          :disabled="!activeSearch.search.pageInfo.hasNextPage"
+          @click="next"
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { GithubUser } from '~/plugins/search'
+import { GithubUser, GithubQuery } from '~/plugins/search'
 
 export default Vue.extend({
   data: (): {
     query: string
-    users: GithubUser[]
+    searches: GithubQuery[]
+    page: number
   } => ({
     query: '',
-    users: [],
+    searches: [],
+    page: -1,
   }),
+  computed: {
+    activeSearch(): GithubQuery {
+      return this.searches[this.page]
+    },
+    userCount(): number {
+      return this.activeSearch?.search.userCount
+    },
+    users(): GithubUser[] {
+      return this.activeSearch?.search.nodes || []
+    },
+  },
   methods: {
     async search() {
-      const { search } = await this.$search(this.query)
-      this.users = search.nodes
+      const search = await this.$search(this.query)
+      this.searches = [search]
+      this.page = 0
+    },
+    async next() {
+      if (this.page + 1 < this.searches.length) return this.page++
+
+      const search = await this.$search(this.query, {
+        after: this.activeSearch.search.pageInfo.endCursor,
+      })
+      this.searches.push(search)
+      this.page++
+    },
+    prev() {
+      this.page--
     },
   },
 })
@@ -52,5 +121,10 @@ export default Vue.extend({
 <style lang="postcss" scoped>
 .search-card {
   width: 1400px;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
 }
 </style>
