@@ -6,6 +6,9 @@
 # install dependencies
 $ yarn install
 
+# add GITHUB_TOKEN environment variable
+$ echo GITHUB_TOKEN={your token} > .env
+
 # serve with hot reload at localhost:3000
 $ yarn dev
 
