@@ -71,6 +71,12 @@ export type GithubUser = {
   isHireable: boolean
   url: string
   avatarUrl: string
+  followers: {
+    totalCount: number
+  }
+  starredRepositories: {
+    totalCount: number
+  }
   pinnedItems: {
     nodes: GithubRepository[]
   }
@@ -136,6 +142,12 @@ const searchGithubUsers = (
               isHireable
               url
               avatarUrl
+              followers {
+                totalCount
+              }
+              starredRepositories {
+                totalCount
+              }
               pinnedItems(first: 6, types: [REPOSITORY]) {
                 nodes {
                   ... on Repository {
@@ -154,7 +166,7 @@ const searchGithubUsers = (
                 }
               }
               repositories(
-                first: 6
+                first: 10
                 orderBy: { field: UPDATED_AT, direction: DESC }
               ) {
                 nodes {

@@ -15,6 +15,12 @@ const user = {
   url: 'https://github.com/lindsaykwardell',
   avatarUrl:
     'https://avatars1.githubusercontent.com/u/32229300?u=8e392c9cbe694d21100b658ddfd185d718fb925e&v=4',
+  followers: {
+    totalCount: 9,
+  },
+  starredRepositories: {
+    totalCount: 62,
+  },
   pinnedItems: {
     nodes: [
       {
