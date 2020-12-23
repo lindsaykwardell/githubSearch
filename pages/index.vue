@@ -48,7 +48,7 @@
             <div class="pl-5 text-gray-500">{{ user.login }}</div>
           </div>
           <div class="flex">
-            <div class="py-2 flex-grow">
+            <div class="py-2 flex-grow pr-5">
               <p>{{ user.bio }}</p>
               <div class="flex text-sm text-gray-600 pt-2">
                 <div v-if="user.location" class="pr-5">{{ user.location }}</div>
@@ -61,11 +61,11 @@
                 </div>
               </div>
             </div>
-            <div class="flex flex-col text-gray-600 text-sm">
+            <div class="flex flex-col text-gray-600 text-sm w-32">
               <div>
-                {{ user.repositories.nodes.length }}
+                {{ user.repositories.totalCount }}
                 {{
-                  user.repositories.nodes.length === 1
+                  user.repositories.totalCount === 1
                     ? 'repository'
                     : 'repositories'
                 }}
@@ -170,7 +170,9 @@ export default Vue.extend({
         ['', 0],
       )
 
-      return mostUsedLang
+      return `${Math.round(
+        (languages.get(mostUsedLang)! / repoList.length) * 100,
+      )}% ${mostUsedLang}`
     },
   },
 })

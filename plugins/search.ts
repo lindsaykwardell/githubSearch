@@ -81,6 +81,7 @@ export type GithubUser = {
     nodes: GithubRepository[]
   }
   repositories: {
+    totalCount: number
     nodes: GithubRepository[]
   }
 }
@@ -98,12 +99,13 @@ export type GithubQuery = {
   }
 }
 
-const searchGithubUsers = (
+export const searchGithubUsers = (
   query: string,
   pagination: {
     after?: string
     before?: string
   } = {},
+  url: string = '/api/graphql',
 ) => {
   const variables = {
     query,
@@ -113,7 +115,7 @@ const searchGithubUsers = (
   }
 
   return request<GithubQuery>(
-    '/api/graphql',
+    url,
     gql`
       query GetUsers($query: String!, $before: String, $after: String) {
         search(
@@ -166,9 +168,10 @@ const searchGithubUsers = (
                 }
               }
               repositories(
-                first: 10
+                first: 20
                 orderBy: { field: UPDATED_AT, direction: DESC }
               ) {
+                totalCount
                 nodes {
                   name
                   url
