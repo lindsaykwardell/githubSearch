@@ -121,7 +121,7 @@ export const searchGithubUsers = (
         search(
           query: $query
           type: USER
-          first: 10
+          first: 5
           before: $before
           after: $after
         ) {
@@ -168,7 +168,7 @@ export const searchGithubUsers = (
                 }
               }
               repositories(
-                first: 20
+                first: 5
                 orderBy: { field: UPDATED_AT, direction: DESC }
               ) {
                 totalCount
