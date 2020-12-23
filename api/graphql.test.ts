@@ -12,7 +12,7 @@ describe('GraphQL API', () => {
 
     await graphql(app)
 
-    server = app.listen(4001)
+    server = app.listen(4000)
   })
 
   afterAll(() => {
@@ -21,7 +21,7 @@ describe('GraphQL API', () => {
 
   it('accepts a GraphQL query', async () => {
     const res = await request(
-      'http://localhost:4001/graphql',
+      'http://localhost:4000/graphql',
       gql`
         query GetUser($query: String!) {
           search(query: $query, type: USER, first: 10) {
