@@ -1,5 +1,5 @@
-import express from 'express'
-import graphql from './graphql'
+const express = require('express')
+const graphql = require('graphql')
 
 const app = express()
 
