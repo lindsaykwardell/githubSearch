@@ -2,7 +2,7 @@ import 'isomorphic-fetch'
 import { Server } from 'http'
 import { request, gql } from 'graphql-request'
 import express from 'express'
-import graphql from './graphql'
+const graphql = require('./graphql')
 
 let server: Server
 
