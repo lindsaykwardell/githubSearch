@@ -1,14 +1,12 @@
-import { Response } from 'express'
-
-const express = require('express')
-const graphql = require('./graphql')
+import express from 'express'
+import graphql from './graphql'
 
 const app = express()
 
 graphql(app)
 
-app.get('/test', (_: void, res: Response) => {
+app.get('/test', (_, res) => {
   res.json({ msg: 'Hello, World' })
 })
 
-module.exports = app
+export default app
