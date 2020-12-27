@@ -1,8 +1,10 @@
+import 'isomorphic-fetch'
+import { Server } from 'http'
 import express from 'express'
 import { searchGithubUsers } from './search'
 import graphql from '~/api/graphql'
 
-let server
+let server: Server
 
 describe('search.ts', () => {
   beforeAll(async () => {
