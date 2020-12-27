@@ -35,7 +35,7 @@ export default {
     '@nuxtjs/axios',
   ],
 
-  serverMiddleware: [{ path: '/api', handler: '~/api/api.ts' }],
+  serverMiddleware: [{ path: '/api', handler: '~/api/api.js' }],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},

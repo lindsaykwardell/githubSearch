@@ -2,17 +2,10 @@ import 'isomorphic-fetch'
 import { ApolloServer } from 'apollo-server-express'
 import { introspectSchema, makeRemoteExecutableSchema } from 'graphql-tools'
 import { print } from 'graphql'
-import { Express } from 'express'
 
 require('dotenv').config()
 
-const executor = async ({
-  document,
-  variables,
-}: {
-  document: any
-  variables: any
-}) => {
+const executor = async ({ document, variables }) => {
   const query = print(document)
   const fetchResult = await fetch('https://api.github.com/graphql', {
     method: 'POST',
@@ -26,12 +19,10 @@ const executor = async ({
   return fetchResult.json()
 }
 
-export default async (app: Express) => {
-  // @ts-ignore
+export default async app => {
   const introspectionResult = await introspectSchema(executor)
   const githubSchema = makeRemoteExecutableSchema({
     schema: introspectionResult,
-    // @ts-ignore
     executor,
   })
 

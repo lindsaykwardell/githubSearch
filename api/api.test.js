@@ -1,8 +1,7 @@
 import 'isomorphic-fetch'
-import { Server } from 'http'
 import app from './api'
 
-let server: Server
+let server
 
 describe('GraphQL API', () => {
   beforeAll(() => {
