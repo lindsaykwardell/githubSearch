@@ -54,6 +54,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { GithubUser, GithubQuery } from '~/plugins/search'
+import Loader from '~/components/Loader'
+import UserCard from '~/components/UserCard'
 
 enum SearchStatus {
   IDLE,
@@ -116,6 +118,10 @@ export default Vue.extend({
       this.page--
       window.scrollTo(0, 0)
     },
+  },
+  components: {
+    Loader,
+    UserCard,
   },
 })
 </script>
