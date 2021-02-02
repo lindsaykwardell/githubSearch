@@ -54,8 +54,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { GithubUser, GithubQuery } from '~/plugins/search'
-import Loader from '~/components/Loader'
-import UserCard from '~/components/UserCard'
+import Loader from '~/components/Loader.vue'
+import UserCard from '~/components/UserCard.vue'
 
 enum SearchStatus {
   IDLE,
