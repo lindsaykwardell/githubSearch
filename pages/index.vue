@@ -15,9 +15,10 @@
                 placeholder="Search GitHub"
               />
               <button
-                class="w-24 bg-green-300 hover:bg-green-400 hover:shadow transition duration-50 rounded p-2 ml-4"
+                class="w-24 bg-green-300 hover:bg-green-400 hover:shadow transition duration-50 rounded p-2 ml-4 flex justify-center"
               >
-                Search
+                <Loader v-if="isSearching" />
+                <template v-else> Search </template>
               </button>
             </div>
           </form>
@@ -29,15 +30,15 @@
       <div
         v-for="user in users"
         :key="user.id"
-        class="flex m-3 p-3 border-b border-gray-300"
+        class="flex flex-col md:flex-row m-3 p-3 border-b border-gray-300"
       >
         <img
-          class="avatar rounded-full shadow"
+          class="avatar rounded-full shadow m-auto"
           :src="user.avatarUrl"
           :alt="`${user.name} avatar`"
         />
-        <div class="flex-grow pl-5">
-          <div class="flex items-end">
+        <div class="flex-grow md:pl-5">
+          <div class="flex flex-col md:flex-row items-center md:items-end my-3">
             <h2 class="text-3xl">
               <a
                 :href="user.url"
@@ -45,13 +46,17 @@
                 >{{ user.name }}</a
               >
             </h2>
-            <div class="pl-5 text-gray-500">{{ user.login }}</div>
+            <div class="md:pl-5 text-gray-500">{{ user.login }}</div>
           </div>
           <div class="flex">
-            <div class="py-2 flex-grow pr-5">
-              <p>{{ user.bio }}</p>
-              <div class="flex text-sm text-gray-600 pt-2">
-                <div v-if="user.location" class="pr-5">{{ user.location }}</div>
+            <div class="py-2 flex-grow md:pr-5">
+              <p class="my-3">{{ user.bio }}</p>
+              <div
+                class="flex flex-col md:flex-row items-center text-sm text-gray-600 pt-2"
+              >
+                <div v-if="user.location" class="md:pr-5">
+                  {{ user.location }}
+                </div>
                 <div v-if="user.email">
                   <a
                     :href="`mailto:${user.email}`"
@@ -61,29 +66,27 @@
                 </div>
               </div>
             </div>
-            <div class="flex flex-col text-gray-600 text-sm w-32">
-              <div>
-                {{ user.repositories.totalCount }}
-                {{
-                  user.repositories.totalCount === 1
-                    ? 'repository'
-                    : 'repositories'
-                }}
-              </div>
-              <div>
-                {{ user.followers.totalCount }}
-                {{ user.followers.totalCount === 1 ? 'follower' : 'followers' }}
-              </div>
-              <div>
-                {{ user.starredRepositories.totalCount }}
-                {{
-                  user.starredRepositories.totalCount === 1 ? 'star' : 'stars'
-                }}
-              </div>
-              <div>
-                {{ preferredLanguage(user.repositories.nodes) }}
-              </div>
-            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-col text-gray-600 text-sm md:w-32 text-center md:text-left"
+        >
+          <div v-if="user.repositories">
+            {{ user.repositories.totalCount }}
+            {{
+              user.repositories.totalCount === 1 ? 'repository' : 'repositories'
+            }}
+          </div>
+          <div v-if="user.followers">
+            {{ user.followers.totalCount }}
+            {{ user.followers.totalCount === 1 ? 'follower' : 'followers' }}
+          </div>
+          <div v-if="user.starredRepositories">
+            {{ user.starredRepositories.totalCount }}
+            {{ user.starredRepositories.totalCount === 1 ? 'star' : 'stars' }}
+          </div>
+          <div v-if="user.repositories">
+            {{ preferredLanguage(user.repositories.nodes) }}
           </div>
         </div>
       </div>
@@ -96,11 +99,14 @@
           Previous
         </button>
         <button
-          class="w-24 bg-gray-200 rounded p-1 text-xs text-gray-700 hover:shadow hover:bg-gray-300 transition duration-50 disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="!activeSearch.search.pageInfo.hasNextPage"
+          class="w-24 bg-gray-200 rounded p-1 text-xs text-gray-700 hover:shadow hover:bg-gray-300 transition duration-50 disabled:cursor-not-allowed disabled:opacity-50 flex justify-center"
+          :disabled="
+            !activeSearch.search.pageInfo.hasNextPage || nextButtonStatus !== 0
+          "
           @click="next"
         >
-          Next
+          <Loader v-if="nextButtonStatus !== 0" />
+          <template v-else>Next</template>
         </button>
       </div>
     </div>
@@ -111,17 +117,29 @@
 import Vue from 'vue'
 import { GithubUser, GithubQuery, GithubRepository } from '~/plugins/search'
 
+enum SearchStatus {
+  IDLE,
+  LOADING,
+}
+
 export default Vue.extend({
   data: (): {
+    searchStatus: SearchStatus
+    nextButtonStatus: SearchStatus
     query: string
     searches: GithubQuery[]
     page: number
   } => ({
+    searchStatus: SearchStatus.IDLE,
+    nextButtonStatus: SearchStatus.IDLE,
     query: '',
     searches: [],
     page: -1,
   }),
   computed: {
+    isSearching(): boolean {
+      return this.searchStatus === SearchStatus.LOADING
+    },
     activeSearch(): GithubQuery {
       return this.searches[this.page]
     },
@@ -129,26 +147,36 @@ export default Vue.extend({
       return this.activeSearch?.search.userCount
     },
     users(): GithubUser[] {
-      return this.activeSearch?.search.nodes || []
+      return (
+        this.activeSearch?.search.nodes.filter(
+          node => node.__typename !== 'Organization',
+        ) || []
+      )
     },
   },
   methods: {
     async search() {
+      this.searchStatus = SearchStatus.LOADING
       const search = await this.$search(this.query)
       this.searches = [search]
       this.page = 0
+      this.searchStatus = SearchStatus.IDLE
     },
     async next() {
       if (this.page + 1 < this.searches.length) return this.page++
 
+      this.nextButtonStatus = SearchStatus.LOADING
       const search = await this.$search(this.query, {
         after: this.activeSearch.search.pageInfo.endCursor,
       })
       this.searches.push(search)
       this.page++
+      this.nextButtonStatus = SearchStatus.IDLE
+      window.scrollTo(0, 0)
     },
     prev() {
       this.page--
+      window.scrollTo(0, 0)
     },
     preferredLanguage(repoList: GithubRepository[]): string {
       const languages = new Map<string, number>()
